@@ -9,7 +9,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 $cache = new FilesystemAdapter();
 $config = Yaml::parseFile(__DIR__ . '/config.yml');
-$title = $_SERVER['SERVER_NAME'] ?? 'Welcome';
+$title = $config['search_term'];
 
 $cacheKey = md5($config['search_term']);
 $gifs = $cache->get($cacheKey, function(ItemInterface $item) use ($config) {
