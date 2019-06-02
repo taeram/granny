@@ -3,27 +3,37 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use GuzzleHttp\Client as GuzzleClient;
-use Symfony\Yaml;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Contracts\Cache\ItemInterface;
 
+$cache = new FilesystemAdapter();
 $config = Yaml::parseFile(__DIR__ . '/config.yml');
-
 $title = $_SERVER['SERVER_NAME'] ?? 'Welcome';
 
-$gif = NULL;
-$client = new GuzzleClient();
-$requestUrl = 'https://api.giphy.com/v1/gifs/search?q=' . urlencode($config['search_term']) . '&api_key=' . $config['giphy_api_key'];
-try {
-  $response = $client->request('GET', 'https://api.github.com/repos/guzzle/guzzle');
-  if ($response->getStatusCode() === 200) {
-    $results = json_decode($response->getBody(), TRUE);
-    if ($results) {
-      $index = rand(0, count($results['data']) - 1);
-      $gif = $results['data'][$index]['image']['original'];
+$gifs = $cache->get('gifs', function(ItemInterface $item) use ($config) {
+  $item->expiresAfter(86400);
+
+  $client = new GuzzleClient();
+  $requestUrl = 'https://api.giphy.com/v1/gifs/search?api_key=' . $config['giphy_api_key'] . '&q=' . urlencode($config['search_term']) . 'limit=25&offset=0&rating=PG-13&lang=en';
+  try {
+    $response = $client->request('GET', $requestUrl);
+    if ($response->getStatusCode() === 200) {
+      return json_decode($response->getBody(), TRUE);
     }
+  } catch (Exception $e) {
+    // noop.
   }
-} catch (\Exception $e) {
-  // noop.
+  return NULL;
+});
+
+// Select a random gif.
+$gif = NULL;
+if ($gifs) {
+  $index = random_int(0, count($gifs['data']) - 1);
+  $gif = $gifs['data'][$index]['images']['original'];
 }
+
 ?><!doctype html>
 <html class="no-js" lang="">
 <head>
@@ -58,7 +68,7 @@ try {
     <meta name="msapplication-config" content="/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 </head>
-<body style="background-color: #69DFFD; margin-left: auto; margin-right: auto; width: <?php echo $gif->width; ?>px">
+<body style="background-color: #69DFFD; margin-left: auto; margin-right: auto; width: <?php echo $gif['width']; ?>px">
 <?php
 if ($gif) {
   echo '<img src="' . $gif['url'] . '" style="width: ' . $gif['width'] . 'px; height: ' . $gif['height'] . 'px;" />';
@@ -67,5 +77,8 @@ else {
   echo '<strong>Error retrieving gif</strong>';
 }
 ?>
+<img src="/img/powered-by-giphy.png"
+     style="position: absolute; right: 10px; bottom: 10px"
+     alt="Powered by Giphy"/>
 </body>
 </html>

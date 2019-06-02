@@ -5,7 +5,8 @@
   "require": {
     "roave/security-advisories": "dev-master",
     "guzzlehttp/guzzle": "^6.3",
-    "symfony/yaml": "^4.3"
+    "symfony/yaml": "^4.3",
+    "symfony/cache": "^4.3"
   },
   "license": "MIT"
 }
