@@ -11,7 +11,8 @@ $cache = new FilesystemAdapter();
 $config = Yaml::parseFile(__DIR__ . '/config.yml');
 $title = $_SERVER['SERVER_NAME'] ?? 'Welcome';
 
-$gifs = $cache->get('gifs', function(ItemInterface $item) use ($config) {
+$cacheKey = md5($config['search_term']);
+$gifs = $cache->get($cacheKey, function(ItemInterface $item) use ($config) {
   $item->expiresAfter(86400);
 
   $client = new GuzzleClient();
