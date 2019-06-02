@@ -1,0 +1,11 @@
+{
+  "name": "taeram/granny",
+  "description": "Display a random gif on each page load for specific search terms.",
+  "type": "project",
+  "require": {
+    "roave/security-advisories": "dev-master",
+    "guzzlehttp/guzzle": "^6.3",
+    "symfony/yaml": "^4.3"
+  },
+  "license": "MIT"
+}
