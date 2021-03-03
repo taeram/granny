@@ -33,6 +33,8 @@ $gif = NULL;
 if ($gifs) {
   $index = random_int(0, count($gifs['data']) - 1);
   $gif = $gifs['data'][$index]['images']['original'];
+} else {
+  $cache->delete($cacheKey);
 }
 
 ?><!doctype html>
