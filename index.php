@@ -16,7 +16,7 @@ $gifs = $cache->get($cacheKey, function(ItemInterface $item) use ($config) {
   $item->expiresAfter(86400);
 
   $client = new GuzzleClient();
-  $requestUrl = 'https://api.giphy.com/v1/gifs/search?api_key=' . $config['giphy_api_key'] . '&q=' . urlencode($config['search_term']) . 'limit=25&offset=0&rating=PG-13&lang=en';
+  $requestUrl = 'https://api.giphy.com/v1/gifs/search?api_key=' . $config['giphy_api_key'] . '&q=' . urlencode($config['search_term']) . '&limit=25&offset=0&rating=PG-13&lang=en';
   try {
     $response = $client->request('GET', $requestUrl);
     if ($response->getStatusCode() === 200) {
