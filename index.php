@@ -46,7 +46,7 @@ if ($gifs) {
     <meta name="description" content="<?php echo $title; ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body style="background-color: #69DFFD; margin-left: auto; margin-right: auto; width: <?php echo $gif['width']; ?>px">
+<body style="background-color: <?php echo $config['background_colour']; ?>; margin-left: auto; margin-right: auto; width: <?php echo $gif['width']; ?>px">
 <?php
 if ($gif) {
   echo '<img src="' . $gif['url'] . '" style="width: ' . $gif['width'] . 'px; height: ' . $gif['height'] . 'px;" />';
