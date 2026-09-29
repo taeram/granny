@@ -1,3 +1,5 @@
+/.well-known/
 /favicon*
 /config.yml
+/error_log
 /vendor/
